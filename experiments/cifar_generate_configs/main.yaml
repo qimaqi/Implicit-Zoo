@@ -18,7 +18,7 @@ inrs:
     _target_: src.model_zoo.siren.INR
     image_size: [32,32] 
     in_dim: 2
-    n_layers: 4
+    n_layers: 3
     up_scale: 32
     out_channels: 3
 

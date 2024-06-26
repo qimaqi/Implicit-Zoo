@@ -36,6 +36,10 @@ conda activate implicit_zoo
 
 
 ## Generate CIFAR-DATA
+```bash
+bash cifar_main_exps.sh
+```
+Note that you can customize config in **experiments/cifar_generate_configs/main.yaml**  Like customize network depth and width or training iteration times. Moreover the default CIFAR data installed place is in **./data**.  You can also change in code  **experiments/generate_cifar_dataset_siren.py** line 54.
 
 
 ## Some of the results
