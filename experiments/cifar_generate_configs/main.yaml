@@ -1,0 +1,44 @@
+device: cuda:0
+debug: false
+
+output_dir: ${hydra:runtime.output_dir}
+seed:
+    random_seed: false
+    seed_num: 1
+
+data:                                                   
+    mean: [ 0.485, 0.456, 0.406 ]
+    std:  [ 0.229, 0.224, 0.225 ]
+    train: true
+    start: 0
+    end: -1
+    image_size: [32,32]                                   
+
+inrs:
+    _target_: src.model_zoo.siren.INR
+    image_size: [32,32] 
+    in_dim: 2
+    n_layers: 4
+    up_scale: 32
+    out_channels: 3
+
+
+
+loss_weight:                                             
+    render: 0                                               
+
+optim:                                                      
+    lr: 2.e-3                                              
+    algo: Adam  
+
+batch_size: 1                                            
+max_iter: 500                                             
+
+freq:
+    vis: 100                                               
+
+hydra:
+  job:
+    chdir: False
+
+    

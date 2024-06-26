@@ -1,0 +1,35 @@
+name: implicit_zoo
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - pyg
+dependencies:
+  - cudatoolkit=11.3
+  - python=3.9
+  - numpy=1.24.1
+  - pytorch=1.12.1
+  - torchvision=0.13.1
+  - pip 
+  - timm
+  - pip:
+    - easydict==1.11
+    - tqdm
+    - imageio
+    - einops
+    - wandb
+    - scikit-learn
+    - matplotlib
+    - lpips
+    - hydra-core
+    - pandas
+    - tensorboard
+    - vit-pytorch
+    - kornia
+    - datasets
+    - opencv-python
+    - transformers
+    - h5py
+    - plotly
+    - torchmetrics
+
