@@ -3,9 +3,10 @@
 
 <p align="center">
   <a href="#introduction">Introduction</a> |
-  <a href="#results-demo">Results Demo</a> |
+  <a href="#download-link">Download Link</a> |
   <a href="#installation">Installation</a> |
   <a href="#quick-start">Quick Start</a> |
+  <a href="#results-demo">Some of the results</a> |
   <a href="#news">News</a> |
   <!-- <a href="#statement">Statement</a> |
   <a href="#reference">Reference</a> -->
@@ -26,16 +27,16 @@ We have released the demo code, more details will be released soon, please check
 Here we provide download link for [CIFAR-10-INRS](https://www.kaggle.com/datasets/alexanderqi/cifar10-inrs-dataset/data), [ImageNet-100-INRs] and [Omniobject3D from Kaggle](https://www.kaggle.com/datasets/alexanderqi/omniobject-inrs/data). For data size reason you can find ImageNet-1K-INRs in [google drive link](https://drive.google.com/drive/folders/1VJ9LMzFb1uiizhS9BzHUN4w-_R1-qyil?usp=drive_link). For CityScapes-INRs the cityscapes we will actively discuss this detail with the Cityscapes team and provide an update as soon as possible.
 
 
-## Setup
+## Installation
 ```bash
 conda env create --file environment.yml
 conda activate implicit_zoo
 ```
 
-## CIFAR Experiment
+## Quick Start
 
 
-## Generate CIFAR-DATA
+### Generate CIFAR-DATA
 ```bash
 bash cifar_main_exps.sh
 ```
