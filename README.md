@@ -6,7 +6,7 @@
   <a href="#download-link">Download Link</a> |
   <a href="#installation">Installation</a> |
   <a href="#quick-start">Quick Start</a> |
-  <a href="#results-demo">Some of the results</a> |
+  <a href="#results-demo">Results Demo</a> |
   <a href="#news">News</a> |
   <!-- <a href="#statement">Statement</a> |
   <a href="#reference">Reference</a> -->
@@ -43,7 +43,7 @@ bash cifar_main_exps.sh
 Note that you can customize config in **experiments/cifar_generate_configs/main.yaml**  Like customize network depth and width or training iteration times. Moreover the default CIFAR data installed place is in **./data**.  You can also change in code  **experiments/generate_cifar_dataset_siren.py** line 54.
 
 
-## Some of the results
+## Results Demo
 #### Time Cost
 ![Local Image](/asset/time-cost.png)
 #### Visualize of queried Images 
