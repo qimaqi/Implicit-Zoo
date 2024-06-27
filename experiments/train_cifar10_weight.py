@@ -13,34 +13,28 @@ import yaml
 from torch.utils.tensorboard import SummaryWriter
 import torchvision
 import torchvision.transforms as transforms
+from einops import rearrange
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay
 
 import os
 import time
 import hydra
 import random 
+import sys
 
 import torchmetrics
 from src.common.utils import progress_bar
 from src.common.randomaug import RandAugment
 from src.layers.static_token import Learnable_Patch
-from sklearn.metrics import ConfusionMatrixDisplay
 
 from src.dataloading.siren_dataset import SirenWeightDataset 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from PIL import Image
 from omegaconf import OmegaConf
-import sys
-from einops import rearrange
 
-from timm.models.layers import PatchEmbed
-# from torchvision.models.feature_extraction import get_graph_node_names
-from torchvision.models.feature_extraction import create_feature_extractor
-# from pprint import pprint
 
-# nodes, _ = get_graph_node_names(classify_model, tracer_kwargs={'leaf_modules': [PatchEmbed]})
-# pprint(nodes)
 
 
 def draw_confusion_matrix(predict, tests, cfg, epoch):
@@ -51,7 +45,6 @@ def draw_confusion_matrix(predict, tests, cfg, epoch):
 
     # save for further eval 
     ConfusionMatrixDisplay.from_predictions(tests_np, predict_np)
-    # plt.savefig('./heatmap/pixel.png')
     fig = plt.gcf()
     fig.canvas.draw()
     rgba_image = np.array(fig.canvas.renderer.buffer_rgba())
@@ -75,9 +68,7 @@ def draw_pixel_location_heatmap_patch(pixels, cfg, epoch):
     image_array = image_array[permute_idx]
     color_intensity = np.repeat(image_array, patch_h*patch_w, axis=0)
 
-    # print("pixels", pixels[...,0].min(), pixels[...,0].max(), pixels[...,1].min(), pixels[...,1].max())
     plt.scatter(pixels_np[..., 0], pixels_np[..., 1], c=color_intensity, marker='.', label='Pixel Locations', cmap='magma')
-    # plt.savefig('./heatmap/pixel.png')
     fig = plt.gcf()
     fig.canvas.draw()
     rgba_image = np.array(fig.canvas.renderer.buffer_rgba())
@@ -93,10 +84,6 @@ def train(cfg):
     use_wandb = cfg.use_wandb
     if use_wandb:
         import wandb
-        # https://wandb.ai/adrishd/hydra-example/reports/Configuring-W-B-Projects-with-Hydra--VmlldzoxNTA2MzQw
-    #     wandb.config = OmegaConf.to_container(
-    #     cfg, resolve=True, throw_on_missing=True
-    # )
 
         watermark = "{}_patch_type_{}_seed{}_lr{}".format(cfg.output_dir, cfg.static_token.patch_type, cfg.seed ,cfg.token_lr)
         wandb.init(project="cifar10-challange_final",
@@ -108,7 +95,6 @@ def train(cfg):
                 )
                 # Track hyperparameters and run metadata
         )
-        # wandb.config.update( OmegaConf.to_container(cfg, resolve=True, throw_on_missing=True))
         print("##### watermark #######", watermark)
 
     else: 
@@ -172,9 +158,6 @@ def train(cfg):
         color_aug = RandAugment(cfg.data.augmentation.N, cfg.data.augmentation.M, aug_tupe=2)
     
 
-
-
-    # parameters_to_optimize =  [learable_token]
     parameters_to_optimize = [{"params": learnable_patch.learable_token, "lr": cfg.token_lr},{"params": list(classify_model.parameters()), "lr": cfg.clf_lr}] 
     if cfg.static_token.patch_type == 1:
         print("learnable_patch.scale_param", learnable_patch.scale_param)
@@ -232,7 +215,6 @@ def train(cfg):
                 # in training, if exist augmentation we want to also apply color augmentation
                 # B x patch_num x h x w x 3
                 if cfg.data.augmentation:
-                    # rgb_debug = rearrange(rgb_patches, 'b (h w) (p1 p2 c) -> b  c (h p1) (w p2)', b = labels.shape[0], h = 32//cfg.static_token.patch_size, w = 32//cfg.static_token.patch_size, p1 = cfg.static_token.patch_size, p2 = cfg.static_token.patch_size, c = 3)
                     rgb_patches_inv = differentiable_inv_normalize(rgb_frames, torch.tensor(cfg.data.mean).to(rgb_frames.device).reshape(1,3,1,1), torch.tensor(cfg.data.std).to(rgb_frames.device).reshape(1,3,1,1) )
         
                     rgb_patches_aug = color_aug(rgb_patches_inv)
@@ -259,8 +241,7 @@ def train(cfg):
             predicted = torch.argmax(est_class, dim = -1)
             correct += (predicted == labels).sum().item()
             total += labels.size(0)
-            # debug
-            # print("learnable_patch.scale_param", learnable_patch.scale_param)
+
 
             progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
                 % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
@@ -323,7 +304,7 @@ def train(cfg):
                 "patch": learnable_patch.state_dict(),
                 "model": classify_model.state_dict(),
                 "optimizer": optimizer.state_dict(),
-                "scheduler": scheduler.state_dict(), # "scaler": scaler.state_dict(),
+                "scheduler": scheduler.state_dict(), 
                 "scaler": scaler.state_dict(),
                 "acc": best_acc,
                 'epoch': epoch}
@@ -364,13 +345,6 @@ def train(cfg):
             list_loss.append(val_loss)
             list_acc.append(acc)
 
-            # est_recon_to_show = rgb_est[:4]
-            # est_recon_to_show = inv_normalize(est_recon_to_show).clamp(0,1)
-            # est_recon_to_show = torchvision.utils.make_grid(est_recon_to_show)
-            
-            # gt_to_show = rgb_gt[:4]
-            # gt_to_show = inv_normalize(gt_to_show).clamp(0,1)
-            # gt_to_show = torchvision.utils.make_grid(gt_to_show)  
             grid_img = torchvision.utils.make_grid(comprison, nrow=4).clamp(0,1)
             
             # Log training..
@@ -386,21 +360,17 @@ def train(cfg):
                             "F1 Score": f1.compute().item(),
                             "clf_lr": optimizer.param_groups[-1]["lr"],
                             "epoch_time": time.time()-start}, step=epoch)
-                # gt_to_show_np = gt_to_show.permute(1, 2, 0).cpu().numpy()
-                # est_to_show_np = est_recon_to_show.permute(1, 2, 0).cpu().numpy()
+
                 heatmap_plot_np = heatmap_plot.permute(1, 2, 0).cpu().numpy()
                 confusion_plot_np = confusion_plot.permute(1, 2, 0).cpu().numpy()
                 att_vis_plot_np = grid_img.permute(1, 2, 0).numpy()
-                # wandb.log({"eval_gt_images": [wandb.Image(gt_to_show_np, caption="Eval GT Images")]}, step=epoch)
-                # wandb.log({"eval_est_images": [wandb.Image(est_to_show_np, caption="Eval est Images")]}, step=epoch)
+
                 wandb.log({"2D Heatmap": [wandb.Image(heatmap_plot_np, caption="Heatsmap")]}, step=epoch)
                 wandb.log({"Confusion Matrix": [wandb.Image(confusion_plot_np, caption="confusion_matrix")]}, step=epoch)
                 wandb.log({"Images compare": [wandb.Image(att_vis_plot_np, caption="Images Network see")]}, step=epoch)
 
 
-            else:
-                # writer.add_image('Eval gt image', gt_to_show, epoch)  
-                # writer.add_image('Eval recon image', est_recon_to_show, epoch)    
+            else: 
                 writer.add_image('confusion matrix', confusion_plot, epoch)  
                 writer.add_image('2D Heatmap', heatmap_plot,epoch, dataformats='CHW')
                 writer.add_scalar('Train loss', trainloss, epoch)
@@ -412,8 +382,7 @@ def train(cfg):
                 writer.add_scalar('F1 Score %', f1.compute().item(), epoch)
                 writer.add_scalar('token_lr', optimizer.param_groups[0]["lr"], epoch)
                 writer.add_scalar('clf_lr', optimizer.param_groups[-1]["lr"], epoch)
-                # Create a grid of images
-                # print("grid_img", grid_img.size())
+
                 writer.add_image('Images Compare', grid_img, dataformats='CHW')
 
             accuracy = torchmetrics.Accuracy(task='multiclass',average='micro', num_classes=10)
@@ -421,13 +390,11 @@ def train(cfg):
             recall = torchmetrics.Recall(task='multiclass', average='micro', num_classes=10)
             f1 = torchmetrics.F1Score(task='multiclass', average='micro', num_classes=10)
 
-            # writer.add_image('Attention_score', att_vis, epoch, dataformats='CHW')
 
     # writeout wandb
     if use_wandb:
         wandb.finish()
-        # wandb.save("wandb_{}.h5".format(args.net))
-    
+
 
 @hydra.main(config_path="./train_cifar10_weight", config_name="main", version_base="1.1")
 def main(cfg):
