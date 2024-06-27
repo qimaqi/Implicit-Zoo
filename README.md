@@ -65,4 +65,6 @@ Note that you can customize config in **experiments/cifar_generate_configs/main.
 - [x] upload ImageNet-100 Dataset
 - [x] upload ImageNet-1k Dataset
 - [x] upload Omniobject3D Dataset
+- [x] upload notebook demo
+- [] upload reproduce code 
 
