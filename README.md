@@ -66,5 +66,18 @@ Note that you can customize config in **experiments/cifar_generate_configs/main.
 - [x] upload ImageNet-1k Dataset
 - [x] upload Omniobject3D Dataset
 - [x] upload notebook demo
-- [] upload reproduce code 
+- [ ] upload reproduce code
+
+# Citation
+```
+@misc{ma2024implicitzoolargescaledatasetneural,
+      title={Implicit-Zoo: A Large-Scale Dataset of Neural Implicit Functions for 2D Images and 3D Scenes}, 
+      author={Qi Ma and Danda Pani Paudel and Ender Konukoglu and Luc Van Gool},
+      year={2024},
+      eprint={2406.17438},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2406.17438}, 
+}
+```
 
