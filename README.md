@@ -24,7 +24,7 @@ This repository contains the download link, example code, test results for the p
 We have released the demo code, more details will be released soon, please check news for details.
 
 ## Download Link
-Here we provide download link for [CIFAR-10-INRS](https://www.kaggle.com/datasets/alexanderqi/cifar10-inrs-dataset/data), [ImageNet-100-INRs](https://www.kaggle.com/datasets/alexanderqi/imagenet100-inrs-dataset) and [Omniobject3D from Kaggle](https://www.kaggle.com/datasets/alexanderqi/omniobject-inrs/data). For data size reason you can find ImageNet-1K-INRs in [google drive link](https://drive.google.com/drive/folders/1VJ9LMzFb1uiizhS9BzHUN4w-_R1-qyil?usp=drive_link). For CityScapes-INRs the cityscapes we will actively discuss this detail with the Cityscapes team and provide an update as soon as possible.
+Here we provide download link for [CIFAR-10-INRS](https://www.kaggle.com/datasets/alexanderqi/cifar10-inrs-dataset/data), [ImageNet-100-INRs](https://www.kaggle.com/datasets/alexanderqi/imagenet100-inrs-dataset) and [Omniobject3D from Kaggle](https://www.kaggle.com/datasets/alexanderqi/omniobject-inrs/data). For data size reason you can find ImageNet-1K-INRs in [Google Drive](https://drive.google.com/drive/folders/1VJ9LMzFb1uiizhS9BzHUN4w-_R1-qyil?usp=drive_link). For CityScapes-INRs the cityscapes we will actively discuss this detail with the Cityscapes team and provide an update as soon as possible. Note that we are now also switching data storage space to [Huggingface](https://huggingface.co/Implicit-Zoo)
 
 
 ## Installation
